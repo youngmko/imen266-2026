@@ -1,0 +1,6 @@
+# runtime dependencies — all preinstalled on Google Colab
+numpy
+scipy
+matplotlib
+ipywidgets
+networkx

@@ -1,0 +1,24 @@
+# Student-facing repo: compiled materials only. Sources never land here —
+# this file is defense-in-depth in case files are copied in by hand.
+*.tex
+*.sty
+*.bib
+*_figs.pdf
+slide_revision_spec*
+**/src/
+**/instructor/
+**/quiz/
+tools/
+templates/
+dist/
+
+# build/runtime clutter
+__pycache__/
+.ipynb_checkpoints/
+*.egg-info/
+*.aux
+*.log
+*.out
+*.toc
+*.nav
+*.snm
