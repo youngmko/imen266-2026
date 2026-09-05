@@ -8,7 +8,7 @@ Models*, Ch. 1–9). Each chapter ships in four layers:
 | Slides | `chXX/slides/*.pdf` | the lecture deck; problem slides carry Colab badges and gray Companion pointers, and each concept / class-problem slide is followed by the worked derivation developed in class (gray numbers = results you verify in the notebook) |
 | Class-problem notebooks | `chXX/notebooks/` | open in Colab. In class we work on the `_INCLASS` version: fill the `TODO`s and let the `check(...)` cells confirm your answer. The plain version is the completed reference for later study |
 | Concept & Proof Companion | `chXX/companion/` | `*_gapfill.pdf` is the one to work through — it replaces note-taking in this course; `*_full.pdf` is the completed reference |
-| Homework | `chXX/homework/` | `hwN.pdf` (Parts A–D) plus the `HWN.ipynb` starter for the simulation part. Ungraded; some Part A problems may reappear on exams |
+| Homework | `chXX/homework/` | `hwN.pdf` (Parts A–D) plus the `HWN.ipynb` starter for the simulation part. Not collected or graded — Part A solutions are posted about 10 days after release; some Part A problems may reappear on exams |
 
 ## Quick start
 
@@ -37,4 +37,5 @@ every file — when a fix is announced, re-download from here.
 
 - All PDFs are the official compiled versions. The LaTeX sources are maintained
   in a separate private repository and are not distributed.
-- Found a typo or a bug in a notebook? Post it on PLMS or email the TAs.
+- Found a typo or a bug in a notebook? Post it on PLMS or email the TAs
+  (Junhui Park, junhui.park@lstlab.org; Jeesoo Baik, jeesoo.baik@lstlab.org).
