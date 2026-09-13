@@ -5,7 +5,7 @@ Models*, Ch. 1–9). Each chapter ships in four layers:
 
 | layer | where | how to use it |
 |---|---|---|
-| Slides | `chXX/slides/*.pdf` | the lecture deck; problem slides carry Colab badges and gray Companion pointers, and each concept / class-problem slide is followed by the worked derivation developed in class (gray numbers = results you verify in the notebook) |
+| Slides | `chXX/slides/*.pdf` | the lecture deck; each problem slide carries a Colab badge with two links — `[INCLASS]` (the version with `TODO`s, for class) and `[full]` (solutions, for home) — plus gray Companion pointers, and each concept / class-problem slide is followed by the worked derivation developed in class (gray numbers = results you verify in the notebook) |
 | Class-problem notebooks | `chXX/notebooks/` | open in Colab. In class we work on the `_INCLASS` version: fill the `TODO`s and let the `check(...)` cells confirm your answer. The plain version is the completed reference for later study |
 | Concept & Proof Companion | `chXX/companion/` | `*_gapfill.pdf` is the one to work through — it replaces note-taking in this course; `*_full.pdf` is the completed reference |
 | Homework | `chXX/homework/` | `hwN.pdf` (Parts A–D) plus the `HWN.ipynb` starter for the simulation part. Not collected or graded — Part A solutions are posted about 10 days after release; some Part A problems may reappear on exams |
