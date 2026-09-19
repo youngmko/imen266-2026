@@ -25,11 +25,12 @@ Models*, Ch. 1–9). Each chapter ships in four layers:
 ```
 ch01-03/    Basic probability      (released)
 ch04/       Markov chains          (released)
+ch05/       Exponential distribution, Poisson process, CTMCs  (released)
 imen266/    course Python package  (auto-installed by the notebooks)
 docs/       AI usage guide
 ```
 
-Further chapters (CTMCs, renewal, queueing, reliability) are added here as the
+Further chapters (renewal, queueing, reliability) are added here as the
 semester progresses. This repository always holds the **current** version of
 every file — when a fix is announced, re-download from here.
 
