@@ -24,7 +24,7 @@ Models*, Ch. 1–9). Each chapter ships in four layers:
 
 ```
 ch01-03/    Basic probability      (released)
-ch04/       Markov chains          (released)
+ch04/       Markov chains          (released; slides/Google_PageRank_MC.pdf is the PageRank lecture handout)
 ch05/       Exponential distribution, Poisson process, CTMCs  (released)
 imen266/    course Python package  (auto-installed by the notebooks)
 docs/       AI usage guide
