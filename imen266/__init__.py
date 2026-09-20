@@ -16,6 +16,6 @@ so that they run on Colab with zero setup.  From Ch.4 onward, notebooks
 import this package to keep in-class code short.
 """
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 
 from .check import check  # noqa: F401

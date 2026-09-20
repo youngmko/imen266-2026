@@ -259,28 +259,110 @@ class DTMC:
             return N / N.sum(axis=1, keepdims=True)
 
     # ------------------------------------------------------------------
-    def plot_transition_diagram(self, ax=None, seed=7, layout="circular"):
-        """Draw the transition diagram with edge labels (requires networkx)."""
+    def plot_transition_diagram(self, ax=None, seed=7, layout="circular",
+                                fmt="{:.3g}", node_radius=None):
+        """Draw the transition diagram: nodes, curved arcs with probability
+        labels, and a self-loop on every state with p_ii > 0.
+
+        Only matplotlib is needed for the drawing; networkx (optional) is used
+        for the spring layout. ``layout`` is "circular" (default) or "spring".
+        """
+        import math
         import matplotlib.pyplot as plt
-        import networkx as nx
-        G = nx.DiGraph()
-        G.add_nodes_from(self.states)
-        for i in range(self.n):
-            for j in range(self.n):
-                if self.P[i, j] > 1e-12:
-                    G.add_edge(self.states[i], self.states[j], weight=self.P[i, j])
-        pos = (nx.circular_layout(G) if layout == "circular"
-               else nx.spring_layout(G, seed=seed))
+        from matplotlib.patches import Circle, Arc, FancyArrowPatch
+
+        n = self.n
+        # --- node positions (unit circle by default) ------------------------
+        if layout == "spring" and n > 1:
+            try:
+                import networkx as nx
+                G = nx.DiGraph()
+                G.add_nodes_from(range(n))
+                G.add_edges_from((i, j) for i in range(n) for j in range(n)
+                                 if i != j and self.P[i, j] > 1e-12)
+                pos = nx.spring_layout(G, seed=seed)
+                pos = {k: (float(v[0]), float(v[1])) for k, v in pos.items()}
+            except ImportError:
+                layout = "circular"
+        if layout != "spring" or n == 1:
+            pos = {i: (math.cos(math.pi / 2 - 2 * math.pi * i / n),
+                       math.sin(math.pi / 2 - 2 * math.pi * i / n)) for i in range(n)}
+        cx = sum(x for x, _ in pos.values()) / n
+        cy = sum(y for _, y in pos.values()) / n
+        if node_radius is None:
+            chord = 2 * math.sin(math.pi / n) if n > 1 else 1.0
+            node_radius = min(0.17, 0.3 * chord) if layout != "spring" else 0.09
+        r = node_radius
+
         if ax is None:
-            _, ax = plt.subplots(figsize=(5, 4))
-        nx.draw_networkx_nodes(G, pos, ax=ax, node_size=900,
-                               node_color="#f0f0f0", edgecolors="k")
-        nx.draw_networkx_labels(G, pos, ax=ax)
-        nx.draw_networkx_edges(G, pos, ax=ax, connectionstyle="arc3,rad=0.18",
-                               arrowsize=15, min_target_margin=18)
-        nx.draw_networkx_edge_labels(
-            G, pos, ax=ax, label_pos=0.3, font_size=9,
-            edge_labels={(u, v): f"{d['weight']:.3g}"
-                         for u, v, d in G.edges(data=True)})
-        ax.set_axis_off()
+            _, ax = plt.subplots(figsize=(5, 4.6))
+
+        # --- nodes -------------------------------------------------------------
+        circles = {}
+        for i in range(n):
+            x, y = pos[i]
+            c = Circle((x, y), r, facecolor="#f0f0f0", edgecolor="k", lw=1.2, zorder=3)
+            ax.add_patch(c); circles[i] = c
+            lab = str(self.states[i])
+            ax.text(x, y, lab, ha="center", va="center", zorder=4,
+                    fontsize=11 if len(lab) <= 2 else (9 if len(lab) <= 4 else 7))
+
+        # --- arcs i -> j -------------------------------------------------------
+        rad = 0.22
+        for i in range(n):
+            for j in range(n):
+                if i == j or self.P[i, j] <= 1e-12:
+                    continue
+                (x0, y0), (x1, y1) = pos[i], pos[j]
+                arrow = FancyArrowPatch((x0, y0), (x1, y1), patchA=circles[i], patchB=circles[j],
+                                        connectionstyle=f"arc3,rad={rad}",
+                                        arrowstyle="-|>", mutation_scale=14,
+                                        lw=1.1, color="k", zorder=2)
+                ax.add_patch(arrow)
+                # label on the quadratic Bezier at t = 0.3 (nearer the source), nudged outward
+                dx, dy = x1 - x0, y1 - y0
+                dist = math.hypot(dx, dy)
+                px, py = -dy / dist, dx / dist
+                qx, qy = (x0 + x1) / 2 + rad * dist * px, (y0 + y1) / 2 + rad * dist * py
+                t = 0.3
+                mx = (1 - t) ** 2 * x0 + 2 * t * (1 - t) * qx + t * t * x1 + 0.05 * dist * px
+                my = (1 - t) ** 2 * y0 + 2 * t * (1 - t) * qy + t * t * y1 + 0.05 * dist * py
+                ax.text(mx, my, fmt.format(self.P[i, j]), fontsize=9, ha="center",
+                        va="center", zorder=5,
+                        bbox=dict(boxstyle="round,pad=0.15", fc="white", ec="none", alpha=0.85))
+
+        # --- self-loops --------------------------------------------------------
+        R = 0.75 * r                                    # loop radius
+        for i in range(n):
+            if self.P[i, i] <= 1e-12:
+                continue
+            x, y = pos[i]
+            ux, uy = x - cx, y - cy                     # outward direction
+            norm = math.hypot(ux, uy)
+            ux, uy = (ux / norm, uy / norm) if norm > 1e-9 else (0.0, 1.0)
+            d = r + 0.55 * R                            # node centre -> loop centre
+            lx, ly = x + d * ux, y + d * uy
+            # intersections of the node circle and the loop circle
+            a = (R * R - r * r + d * d) / (2 * d)       # distance from loop centre along the axis
+            h = math.sqrt(max(R * R - a * a, 0.0))
+            base = math.degrees(math.atan2(-uy, -ux))   # direction from loop centre back to the node
+            half = math.degrees(math.atan2(h, a))       # half-angle of the hidden part
+            arc = Arc((lx, ly), 2 * R, 2 * R, angle=0,
+                      theta1=base + half, theta2=base - half + 360, lw=1.1, color="k", zorder=2)
+            ax.add_patch(arc)
+            # arrowhead at the end of the visible arc (angle base - half)
+            th = math.radians(base - half)
+            ex, ey = lx + R * math.cos(th), ly + R * math.sin(th)
+            tx, ty = -math.sin(th), math.cos(th)       # counter-clockwise tangent
+            ax.add_patch(FancyArrowPatch((ex - 0.02 * tx, ey - 0.02 * ty), (ex, ey),
+                                         arrowstyle="-|>", mutation_scale=14, lw=1.1,
+                                         color="k", zorder=2, shrinkA=0, shrinkB=0))
+            ax.text(lx + (R + 0.07) * ux, ly + (R + 0.07) * uy, fmt.format(self.P[i, i]),
+                    fontsize=9, ha="center", va="center", zorder=5,
+                    bbox=dict(boxstyle="round,pad=0.15", fc="white", ec="none", alpha=0.85))
+
+        xs = [p[0] for p in pos.values()]; ys = [p[1] for p in pos.values()]
+        pad = r + 2.2 * R + 0.12
+        ax.set_xlim(min(xs) - pad, max(xs) + pad); ax.set_ylim(min(ys) - pad, max(ys) + pad)
+        ax.set_aspect("equal"); ax.set_axis_off()
         return ax
