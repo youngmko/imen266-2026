@@ -7,7 +7,7 @@ check        : self-check helper used by in-class TODO notebooks
 dtmc         : discrete-time Markov chains (Ch.4) — modeling, transient, classification, limits
 pagerank     : PageRank as a DTMC (Ch.4 practicum)
 ctmc         : continuous-time Markov chains (Ch.5-6) — exponential/Poisson helpers, CTMC(Q), birth-death, transient P(t), limiting p
-renewal      : renewal / regenerative processes (Ch.7)  [stub, planned]
+renewal      : renewal / regenerative processes (Ch.7) — simulation, renewal function (equation / series / closed forms), limit theorems, renewal reward, age/residual, inspection paradox, alternating renewal, semi-Markov
 queueing     : Markovian queues & Jackson networks (Ch.8) [stub, planned]
 reliability  : structure functions & system reliability (Ch.9) [stub, planned]
 
@@ -16,6 +16,6 @@ so that they run on Colab with zero setup.  From Ch.4 onward, notebooks
 import this package to keep in-class code short.
 """
 
-__version__ = "0.3.1"
+__version__ = "0.4.0"
 
 from .check import check  # noqa: F401
