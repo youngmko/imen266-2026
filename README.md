@@ -27,11 +27,12 @@ ch01-03/    Basic probability      (released)
 ch04/       Markov chains          (released; slides/Google_PageRank_MC.pdf is the PageRank lecture handout)
 ch05/       Exponential distribution, Poisson process, CTMCs  (released)
 ch07/       Renewal theory         (released)
+ch08/       Queueing theory: Markovian queues, finite capacity, M/G/1, time reversibility, Jackson networks  (released)
 imen266/    course Python package  (auto-installed by the notebooks)
 docs/       AI usage guide
 ```
 
-Further chapters (queueing, reliability) are added here as the
+The last chapter (reliability) is added here as the
 semester progresses. This repository always holds the **current** version of
 every file — when a fix is announced, re-download from here.
 
